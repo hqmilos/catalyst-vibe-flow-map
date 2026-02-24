@@ -147,6 +147,26 @@
     border-left-color: #7c3aed;
     color: #1e0a5e;
   }
+  .flow-card.card-drafted {
+    opacity: 0.65;
+    filter: saturate(0.6);
+    background: #e4e4e7 !important;
+    border-left-color: #71717a !important;
+    color: #52525b !important;
+  }
+  .flow-card.card-drafted .trigger-chip,
+  .flow-card.card-drafted .timing-chip,
+  .flow-card.card-drafted .chip-meta {
+    opacity: 0.85;
+  }
+  .card-badge.card-badge-drafted {
+    background: #a1a1aa;
+    color: #fff;
+  }
+  .card-badge.card-badge-drafting {
+    background: #a1a1aa;
+    color: #fff;
+  }
   .card-cart {
     background: #fff7ed;
     border-left-color: #ea580c;
@@ -230,6 +250,23 @@
   .card-group .flow-card:last-child {
     margin-bottom: 0;
   }
+  .card-group.card-group-drafting {
+    opacity: 0.65;
+    filter: saturate(0.6);
+    background: #e4e4e7;
+    border-color: #a1a1aa;
+  }
+  .card-group.card-group-drafting .card-group-title {
+    color: #71717a;
+  }
+  .card-group.card-group-drafting .compact-card {
+    opacity: 0.9;
+  }
+  .card-group-title .card-badge {
+    margin-left: 6px;
+    margin-top: 0;
+    vertical-align: middle;
+  }
 
   /* Compact card for grouped items */
   .compact-card {
@@ -311,6 +348,11 @@
     background: #fff7ed;
     border-color: #fcd34d;
     color: #92400e;
+  }
+  .chip-viewed {
+    background: #e0f2fe;
+    border-color: #7dd3fc;
+    color: #0c4a6e;
   }
   .chip-delivery {
     background: #d1fae5;
@@ -489,8 +531,9 @@
 
   <!-- Pre: Signup -->
   <div class="cell">
-    <div class="flow-card card-welcome">
+    <div class="flow-card card-welcome card-drafted">
       <div class="card-name">Welcome - $5 Slider</div>
+      <span class="card-badge card-badge-drafted">DRAFTED</span>
       <span class="chip-meta">Trigger</span>
       <span class="trigger-chip chip-popup">&#x2139; Popup Signup</span>
       <span class="chip-meta">Timing</span>
@@ -500,6 +543,13 @@
 
   <!-- Pre: Cart -->
   <div class="cell">
+    <div class="flow-card card-cart">
+      <div class="card-name">Browse Abandonment</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-viewed">&#x1F441;&#xFE0F; Viewed Product</span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; 30 Min</span>
+    </div>
     <div class="flow-card card-cart">
       <div class="card-name">Abandoned Cart</div>
       <span class="chip-meta">Trigger</span>
@@ -526,20 +576,12 @@
         <div class="chip-row"><span class="trigger-chip chip-cart">&#x1F6D2; Added to Cart</span><span class="timing-chip">&#x23F1; 30 Min</span></div>
       </div>
     </div>
-    <div class="card-group" style="margin-top: 4px;">
-      <div class="card-group-title">Checkout Abandonment</div>
-      <div class="compact-card card-cart">
-        <div class="card-name">AOV $50+ (No Code)</div>
-        <div class="chip-row"><span class="trigger-chip chip-checkout">&#x1F4B3; Started Checkout</span><span class="timing-chip">&#x23F1; 40 Min</span></div>
-      </div>
-      <div class="compact-card card-cart">
-        <div class="card-name">AOV $50+ (One-Time Code)</div>
-        <div class="chip-row"><span class="trigger-chip chip-checkout">&#x1F4B3; Started Checkout</span><span class="timing-chip">&#x23F1; 40 Min</span></div>
-      </div>
-      <div class="compact-card card-cart">
-        <div class="card-name">Low AOV (No Code)</div>
-        <div class="chip-row"><span class="trigger-chip chip-checkout">&#x1F4B3; Started Checkout</span><span class="timing-chip">&#x23F1; 20 Min</span></div>
-      </div>
+    <div class="flow-card card-cart">
+      <div class="card-name">Abandoned Checkout</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-checkout">&#x1F4B3; Checkout Started</span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; 45 Min</span>
     </div>
   </div>
 
@@ -580,43 +622,22 @@
 
   <!-- Post: Post-Purchase (Days) -->
   <div class="cell">
-    <div class="flow-card card-survey">
-      <div class="card-name">First In-Store Purchase Survey</div>
-      <span class="chip-meta">Trigger</span>
-      <span class="trigger-chip chip-list">&#x2795; Added to Segment</span>
-      <span class="chip-meta">Timing</span>
-      <span class="timing-chip">&#x23F1; 2 Days</span>
-    </div>
-    <div class="flow-card card-survey">
-      <div class="card-name">First E-Commerce Purchase Survey</div>
-      <span class="chip-meta">Trigger</span>
-      <span class="trigger-chip chip-list">&#x2795; Added to Segment</span>
-      <span class="chip-meta">Timing</span>
-      <span class="timing-chip">&#x23F1; 1 Day</span>
-    </div>
-    <div class="flow-card card-survey">
-      <div class="card-name">High Spender Post-Purchase Survey</div>
-      <span class="chip-meta">Trigger</span>
-      <span class="trigger-chip chip-aov">&#x1F4B0; High AOV Order</span>
-      <span class="chip-meta">Timing</span>
-      <span class="timing-chip">&#x23F1; 1 Day</span>
-    </div>
     <div class="flow-card card-incentive">
-      <div class="card-name">Second Order Incentive: 20% Off</div>
+      <div class="card-name">Review Collection (30 locations)</div>
       <span class="chip-meta">Trigger</span>
-      <span class="trigger-chip chip-order">&#x2705; 1st Placed Order</span>
+      <span class="trigger-chip chip-order">&#x2705; Completed Order</span>
       <span class="chip-meta">Timing</span>
-      <span class="timing-chip">&#x23F1; TBD</span>
+      <span class="timing-chip">&#x23F1; 1 Hour</span>
     </div>
     <div class="flow-card card-vip">
-      <div class="card-name">VIP Customer Engagement</div>
+      <div class="card-name">High Value Customer Upgrade</div>
       <span class="chip-meta">Trigger</span>
       <span class="trigger-chip chip-list has-tooltip">&#x2795; Added to Segment
         <span class="chip-tooltip">
           <span class="tooltip-title">VIP Segment Definition</span>
           <span class="tooltip-rule">Completed Order &ge; <strong>4×</strong> all time</span>
           <span class="tooltip-and">AND</span>
-          <span class="tooltip-rule">AoV &gt; <strong>$40</strong></span>
+          <span class="tooltip-rule">AoV &gt; <strong>$99</strong></span>
           <span class="tooltip-and">AND</span>
           <span class="tooltip-rule">Completed Order <strong>0×</strong> in last <strong>30 days</strong></span>
           <span class="tooltip-and">AND</span>
@@ -631,7 +652,34 @@
   <!-- Post: Retention (Weeks) -->
   <div class="cell">
     <div class="card-group">
-      <div class="card-group-title">Category Upsells</div>
+      <div class="card-group-title">Category Replenishment</div>
+      <div class="compact-card card-replenish">
+        <div class="card-name">&#x1F33C; Flower Replenishment</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 14 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-replenish">
+        <div class="card-name">&#x2601;&#xFE0F; Vapes Replenishment</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 14 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-replenish">
+        <div class="card-name">&#x1F36C; Edibles Replenishment</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 14 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-replenish">
+        <div class="card-name">&#x1F6AC; Prerolls Replenishment</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 10 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-replenish">
+        <div class="card-name">&#x1F4A7; Tinctures Replenishment</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 14 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-replenish">
+        <div class="card-name">&#x1F964; Drinks Replenishment</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 14 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+    </div>
+    <div class="card-group card-group-drafting" style="margin-top: 6px;">
+      <div class="card-group-title">Category Upsells <span class="card-badge card-badge-drafting">DRAFTING</span></div>
       <div class="compact-card card-upsell">
         <div class="card-name">&#x1F33C; Flower Upsell</div>
         <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; Wait Until 8:30 AM</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
@@ -649,8 +697,8 @@
         <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; Wait Until 8:30 AM</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
       </div>
     </div>
-    <div class="card-group" style="margin-top: 6px;">
-      <div class="card-group-title">Low AOV Upsells</div>
+    <div class="card-group card-group-drafting" style="margin-top: 6px;">
+      <div class="card-group-title">Low AOV Upsells <span class="card-badge card-badge-drafting">DRAFTING</span></div>
       <div class="compact-card card-upsell">
         <div class="card-name">&#x1F33C; Flower (Low AOV)</div>
         <div class="chip-row"><span class="trigger-chip chip-aov">&#x1F4B0; Low AOV Order</span><span class="timing-chip">&#x23F1; Wait Until 8:30 AM</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
@@ -666,25 +714,6 @@
       <div class="compact-card card-upsell">
         <div class="card-name">&#x1F6AC; Prerolls (Low AOV)</div>
         <div class="chip-row"><span class="trigger-chip chip-aov">&#x1F4B0; Low AOV Order</span><span class="timing-chip">&#x23F1; Wait Until 8:30 AM</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
-      </div>
-    </div>
-    <div class="card-group" style="margin-top: 6px;">
-      <div class="card-group-title">Category Replenishment</div>
-      <div class="compact-card card-replenish">
-        <div class="card-name">&#x1F33C; Flower Replenishment</div>
-        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 14 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
-      </div>
-      <div class="compact-card card-replenish">
-        <div class="card-name">&#x2601;&#xFE0F; Vapes Replenishment</div>
-        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 14 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
-      </div>
-      <div class="compact-card card-replenish">
-        <div class="card-name">&#x1F36C; Edibles Replenishment</div>
-        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 14 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
-      </div>
-      <div class="compact-card card-replenish">
-        <div class="card-name">&#x1F6AC; Prerolls Replenishment</div>
-        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 10 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
       </div>
     </div>
   </div>
@@ -741,24 +770,6 @@
       <span class="chip-meta">Timing</span>
       <span class="timing-chip">&#x23F1; Immediate</span>
       <span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span>
-    </div>
-    <div class="flow-card card-winback" style="margin-top: 4px;">
-      <div class="card-name">Won Back Customers</div>
-      <span class="chip-meta">Trigger</span>
-      <span class="trigger-chip chip-list has-tooltip">&#x2795; Won Back 2 Weeks Ago
-        <span class="chip-tooltip">
-          <span class="tooltip-title">Won Back 2 Weeks Ago</span>
-          <span class="tooltip-rule">Opened Email <strong>1×+</strong> between <strong>14–30 days ago</strong> in <em>Winback — 90 Days</em></span>
-          <span class="tooltip-or">OR</span>
-          <span class="tooltip-rule">Opened Email <strong>1×+</strong> between <strong>14–30 days ago</strong> in <em>Winback — 60 Days</em></span>
-          <span class="tooltip-or">OR</span>
-          <span class="tooltip-rule">Opened Email <strong>1×+</strong> between <strong>14–30 days ago</strong> in <em>Winback — 30 Days</em></span>
-          <span class="tooltip-and">AND</span>
-          <span class="tooltip-rule">Completed Order <strong>1×+</strong> between <strong>14–30 days ago</strong></span>
-        </span>
-      </span>
-      <span class="chip-meta">Timing</span>
-      <span class="timing-chip">&#x23F1; Wait Until 11 AM</span>
     </div>
     <div class="flow-card card-birthday" style="margin-top: 4px;">
       <div class="card-name">Happy Birthday</div>
