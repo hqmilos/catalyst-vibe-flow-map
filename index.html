@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catalyst: Klaviyo Flow Map</title>
+<link rel="icon" type="image/png" href="catalyst-icon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #f4f4f5;
+    color: #18181b;
+  }
+
+  /* Main grid */
+  .flow-grid {
+    display: grid;
+    grid-template-columns: 150px repeat(6, 1fr);
+    grid-template-rows: auto auto auto;
+    gap: 0;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
+  }
+
+  /* Column headers */
+  .col-header {
+    background: #fafafa;
+    padding: 20px 16px;
+    text-align: center;
+    border-bottom: 2px solid #e4e4e7;
+    border-right: 1px solid #e4e4e7;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .col-header:last-child { border-right: none; }
+  .col-header .col-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #18181b;
+    margin-bottom: 5px;
+  }
+  .col-header .col-timing {
+    font-size: 11px;
+    color: #a1a1aa;
+    font-weight: 500;
+  }
+  .col-header .col-icon {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  /* Row labels */
+  .row-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 10px;
+    border-right: 2px solid #e4e4e7;
+    border-bottom: 1px solid #e4e4e7;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .row-label.pre {
+    background: #ede9fe;
+    color: #6d28d9;
+  }
+  .row-label.post {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  /* Cells */
+  .cell {
+    padding: 14px;
+    border-right: 1px solid #e4e4e7;
+    border-bottom: 1px solid #e4e4e7;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #ffffff;
+  }
+  .cell:nth-child(7n) { border-right: none; }
+  .cell.empty {
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      #f4f4f5 10px,
+      #f4f4f5 11px
+    );
+    opacity: 0.7;
+  }
+
+  /* Flow cards */
+  .flow-card {
+    padding: 12px 14px;
+    border-radius: 9px;
+    font-size: 12.5px;
+    font-weight: 500;
+    line-height: 1.45;
+    cursor: default;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
+    border-left: 3px solid transparent;
+  }
+  .flow-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 10;
+  }
+  .flow-card .card-name {
+    font-weight: 600;
+    margin-bottom: 2px;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+  .flow-card .card-trigger {
+    font-size: 10px;
+    opacity: 0.7;
+    font-weight: 400;
+  }
+  .flow-card .card-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Color themes for card types */
+  .card-welcome {
+    background: #ede9fe;
+    border-left-color: #7c3aed;
+    color: #1e0a5e;
+  }
+  .card-cart {
+    background: #fff7ed;
+    border-left-color: #ea580c;
+    color: #431407;
+  }
+  .card-confirm {
+    background: #f0fdf4;
+    border-left-color: #16a34a;
+    color: #052e16;
+  }
+  .card-survey {
+    background: #f5f3ff;
+    border-left-color: #9333ea;
+    color: #2e1065;
+  }
+  .card-upsell {
+    background: #ecfeff;
+    border-left-color: #0891b2;
+    color: #083344;
+  }
+  .card-replenish {
+    background: #f0fdf4;
+    border-left-color: #059669;
+    color: #022c22;
+  }
+  .card-wrapped {
+    background: #fdf2f8;
+    border-left-color: #db2777;
+    color: #500724;
+  }
+  .card-winback {
+    background: #fffbeb;
+    border-left-color: #d97706;
+    color: #451a03;
+  }
+  .card-vip {
+    background: #faf5ff;
+    border-left-color: #a21caf;
+    color: #3b0764;
+  }
+  .card-birthday {
+    background: #fff1f2;
+    border-left-color: #e11d48;
+    color: #4c0519;
+  }
+  .card-tagging {
+    background: #f8fafc;
+    border-left-color: #64748b;
+    color: #0f172a;
+  }
+  .card-incentive {
+    background: #ecfeff;
+    border-left-color: #0284c7;
+    color: #082f49;
+  }
+  .card-delivery {
+    background: #f0fdf4;
+    border-left-color: #10b981;
+    color: #022c22;
+  }
+
+  /* Category group */
+  .card-group {
+    background: rgba(0,0,0,0.02);
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px dashed #d4d4d8;
+  }
+  .card-group-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #a1a1aa;
+    margin-bottom: 8px;
+    padding-left: 4px;
+  }
+  .card-group .flow-card {
+    margin-bottom: 6px;
+  }
+  .card-group .flow-card:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Compact card for grouped items */
+  .compact-card {
+    padding: 7px 11px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    margin-bottom: 5px;
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+  }
+  .compact-card:last-child { margin-bottom: 0; }
+  .compact-card .card-name {
+    font-weight: 600;
+    font-size: 11px;
+    margin-bottom: 4px;
+    line-height: 1.35;
+  }
+  .compact-card .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+  }
+
+  /* Chip meta labels */
+  .chip-meta {
+    display: block;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: rgba(113,113,122,0.8);
+    margin-top: 6px;
+    margin-bottom: 2px;
+    line-height: 1;
+  }
+  .flow-card .chip-meta:first-of-type {
+    margin-top: 5px;
+  }
+
+  /* Trigger chips */
+  .trigger-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border: 1px solid transparent;
+    line-height: 1;
+  }
+  .chip-list {
+    background: #ede9fe;
+    border-color: #c4b5fd;
+    color: #5b21b6;
+  }
+  .chip-popup {
+    background: #ede9fe;
+    border-color: #c4b5fd;
+    color: #5b21b6;
+  }
+  .chip-order {
+    background: #dcfce7;
+    border-color: #86efac;
+    color: #166534;
+  }
+  .chip-cart {
+    background: #ffedd5;
+    border-color: #fdba74;
+    color: #9a3412;
+  }
+  .chip-checkout {
+    background: #fff7ed;
+    border-color: #fcd34d;
+    color: #92400e;
+  }
+  .chip-delivery {
+    background: #d1fae5;
+    border-color: #6ee7b7;
+    color: #065f46;
+  }
+  .chip-date {
+    background: #ffe4e6;
+    border-color: #fca5a5;
+    color: #9f1239;
+  }
+  .chip-aov {
+    background: #e0f2fe;
+    border-color: #7dd3fc;
+    color: #0c4a6e;
+  }
+  .chip-vip {
+    background: #fae8ff;
+    border-color: #e879f9;
+    color: #701a75;
+  }
+
+  /* Chip inside compact cards */
+  .compact-card .trigger-chip {
+    font-size: 8px;
+    padding: 2px 5px;
+  }
+
+  /* Frequency chip */
+  .freq-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 3px 7px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border: 1px dashed #fca5a5;
+    background: #fff1f2;
+    color: #9f1239;
+    line-height: 1;
+  }
+  .compact-card .freq-chip {
+    font-size: 8px;
+    padding: 2px 5px;
+  }
+
+  /* Timing chips */
+  .timing-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 3px 7px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border: 1px dashed #d4d4d8;
+    background: #f4f4f5;
+    color: #71717a;
+    line-height: 1;
+  }
+  .compact-card .timing-chip {
+    font-size: 8px;
+    padding: 2px 5px;
+  }
+
+  /* Segment tooltip */
+  .has-tooltip {
+    position: relative;
+  }
+  .chip-tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
+    border-radius: 10px;
+    padding: 12px 14px;
+    width: 220px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 100;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 11px;
+    font-weight: 400;
+    color: #18181b;
+    line-height: 1.5;
+    white-space: normal;
+    pointer-events: none;
+  }
+  .has-tooltip:hover .chip-tooltip {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .tooltip-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #a1a1aa;
+    margin-bottom: 4px;
+  }
+  .tooltip-rule {
+    font-size: 11.5px;
+    color: #18181b;
+    padding: 4px 8px;
+    background: #f4f4f5;
+    border-radius: 5px;
+  }
+  .tooltip-and {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #a1a1aa;
+    text-align: center;
+  }
+  .tooltip-or {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #0891b2;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="flow-grid">
+
+  <!-- COLUMN HEADERS (row 1) -->
+  <div class="col-header" style="background: #fafafa; border-bottom: 2px solid #e4e4e7; display: flex; align-items: center; justify-content: center;">
+    <img src="catalyst-icon.png" style="height: 72px; width: auto;" alt="Catalyst">
+  </div>
+  <div class="col-header">
+    <div class="col-icon">&#x1F44B;</div>
+    <div class="col-title">Signup</div>
+    <div class="col-timing">Immediate</div>
+  </div>
+  <div class="col-header">
+    <div class="col-icon">&#x1F6D2;</div>
+    <div class="col-title">Cart / Checkout</div>
+    <div class="col-timing">Hours after abandon</div>
+  </div>
+  <div class="col-header">
+    <div class="col-icon">&#x2705;</div>
+    <div class="col-title">Purchase</div>
+    <div class="col-timing">Immediate</div>
+  </div>
+  <div class="col-header">
+    <div class="col-icon">&#x1F4C8;</div>
+    <div class="col-title">Post-Purchase</div>
+    <div class="col-timing">Days (1-15)</div>
+  </div>
+  <div class="col-header">
+    <div class="col-icon">&#x1F504;</div>
+    <div class="col-title">Retention</div>
+    <div class="col-timing">Weeks (2-6)</div>
+  </div>
+  <div class="col-header">
+    <div class="col-icon">&#x1F490;</div>
+    <div class="col-title">Winback</div>
+    <div class="col-timing">30 / 60 / 90 days</div>
+  </div>
+
+  <!-- ROW 1: PRE-PURCHASE -->
+  <div class="row-label pre">Pre-Purchase</div>
+
+  <!-- Pre: Signup -->
+  <div class="cell">
+    <div class="flow-card card-welcome">
+      <div class="card-name">Welcome - $5 Slider</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-popup">&#x2139; Popup Signup</span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; Immediate</span>
+    </div>
+  </div>
+
+  <!-- Pre: Cart -->
+  <div class="cell">
+    <div class="flow-card card-cart">
+      <div class="card-name">Abandoned Cart</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-cart">&#x1F6D2; Added to Cart</span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; 30 Min</span>
+    </div>
+    <div class="card-group">
+      <div class="card-group-title">Category-Specific Carts</div>
+      <div class="compact-card card-cart">
+        <div class="card-name">&#x1F33C; Flower</div>
+        <div class="chip-row"><span class="trigger-chip chip-cart">&#x1F6D2; Added to Cart</span><span class="timing-chip">&#x23F1; 30 Min</span></div>
+      </div>
+      <div class="compact-card card-cart">
+        <div class="card-name">&#x2601;&#xFE0F; Vapes</div>
+        <div class="chip-row"><span class="trigger-chip chip-cart">&#x1F6D2; Added to Cart</span><span class="timing-chip">&#x23F1; 30 Min</span></div>
+      </div>
+      <div class="compact-card card-cart">
+        <div class="card-name">&#x1F36C; Edibles</div>
+        <div class="chip-row"><span class="trigger-chip chip-cart">&#x1F6D2; Added to Cart</span><span class="timing-chip">&#x23F1; 30 Min</span></div>
+      </div>
+      <div class="compact-card card-cart">
+        <div class="card-name">&#x1F6AC; Prerolls</div>
+        <div class="chip-row"><span class="trigger-chip chip-cart">&#x1F6D2; Added to Cart</span><span class="timing-chip">&#x23F1; 30 Min</span></div>
+      </div>
+    </div>
+    <div class="card-group" style="margin-top: 4px;">
+      <div class="card-group-title">Checkout Abandonment</div>
+      <div class="compact-card card-cart">
+        <div class="card-name">AOV $50+ (No Code)</div>
+        <div class="chip-row"><span class="trigger-chip chip-checkout">&#x1F4B3; Started Checkout</span><span class="timing-chip">&#x23F1; 40 Min</span></div>
+      </div>
+      <div class="compact-card card-cart">
+        <div class="card-name">AOV $50+ (One-Time Code)</div>
+        <div class="chip-row"><span class="trigger-chip chip-checkout">&#x1F4B3; Started Checkout</span><span class="timing-chip">&#x23F1; 40 Min</span></div>
+      </div>
+      <div class="compact-card card-cart">
+        <div class="card-name">Low AOV (No Code)</div>
+        <div class="chip-row"><span class="trigger-chip chip-checkout">&#x1F4B3; Started Checkout</span><span class="timing-chip">&#x23F1; 20 Min</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pre: Purchase (empty) -->
+  <div class="cell empty"></div>
+  <!-- Pre: Post-Purchase (empty) -->
+  <div class="cell empty"></div>
+  <!-- Pre: Retention (empty) -->
+  <div class="cell empty"></div>
+  <!-- Pre: Winback (empty) -->
+  <div class="cell empty"></div>
+
+  <!-- ROW 2: POST-PURCHASE -->
+  <div class="row-label post">Post 1st Purchase</div>
+
+  <!-- Post: Signup (empty) -->
+  <div class="cell empty"></div>
+  <!-- Post: Cart (empty - repeat buyers share pre-purchase cart flows) -->
+  <div class="cell empty"></div>
+
+  <!-- Post: Purchase -->
+  <div class="cell">
+    <div class="flow-card card-confirm">
+      <div class="card-name">Order Confirmation: E-Commerce</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-order">&#x2705; Placed Order</span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; 16 Min</span>
+    </div>
+    <div class="flow-card card-confirm">
+      <div class="card-name">Order Confirmation: In-Store</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-order">&#x2705; Placed Order</span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; 16 Min</span>
+    </div>
+  </div>
+
+  <!-- Post: Post-Purchase (Days) -->
+  <div class="cell">
+    <div class="flow-card card-survey">
+      <div class="card-name">First In-Store Purchase Survey</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-list">&#x2795; Added to Segment</span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; 2 Days</span>
+    </div>
+    <div class="flow-card card-survey">
+      <div class="card-name">First E-Commerce Purchase Survey</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-list">&#x2795; Added to Segment</span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; 1 Day</span>
+    </div>
+    <div class="flow-card card-survey">
+      <div class="card-name">High Spender Post-Purchase Survey</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-aov">&#x1F4B0; High AOV Order</span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; 1 Day</span>
+    </div>
+    <div class="flow-card card-incentive">
+      <div class="card-name">Second Order Incentive: 20% Off</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-order">&#x2705; 1st Placed Order</span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; TBD</span>
+    </div>
+    <div class="flow-card card-vip">
+      <div class="card-name">VIP Customer Engagement</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-list has-tooltip">&#x2795; Added to Segment
+        <span class="chip-tooltip">
+          <span class="tooltip-title">VIP Segment Definition</span>
+          <span class="tooltip-rule">Completed Order &ge; <strong>4×</strong> all time</span>
+          <span class="tooltip-and">AND</span>
+          <span class="tooltip-rule">AoV &gt; <strong>$40</strong></span>
+          <span class="tooltip-and">AND</span>
+          <span class="tooltip-rule">Completed Order <strong>0×</strong> in last <strong>30 days</strong></span>
+          <span class="tooltip-and">AND</span>
+          <span class="tooltip-rule">Can receive <strong>email marketing</strong></span>
+        </span>
+      </span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; Immediate</span>
+    </div>
+  </div>
+
+  <!-- Post: Retention (Weeks) -->
+  <div class="cell">
+    <div class="card-group">
+      <div class="card-group-title">Category Upsells</div>
+      <div class="compact-card card-upsell">
+        <div class="card-name">&#x1F33C; Flower Upsell</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; Wait Until 8:30 AM</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-upsell">
+        <div class="card-name">&#x2601;&#xFE0F; Vapes Upsell</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; Wait Until 8:30 AM</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-upsell">
+        <div class="card-name">&#x1F36C; Edibles Upsell</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; Wait Until 8:30 AM</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-upsell">
+        <div class="card-name">&#x1F6AC; Prerolls Upsell</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; Wait Until 8:30 AM</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+    </div>
+    <div class="card-group" style="margin-top: 6px;">
+      <div class="card-group-title">Low AOV Upsells</div>
+      <div class="compact-card card-upsell">
+        <div class="card-name">&#x1F33C; Flower (Low AOV)</div>
+        <div class="chip-row"><span class="trigger-chip chip-aov">&#x1F4B0; Low AOV Order</span><span class="timing-chip">&#x23F1; Wait Until 8:30 AM</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-upsell">
+        <div class="card-name">&#x2601;&#xFE0F; Vapes (Low AOV)</div>
+        <div class="chip-row"><span class="trigger-chip chip-aov">&#x1F4B0; Low AOV Order</span><span class="timing-chip">&#x23F1; Wait Until 8:30 AM</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-upsell">
+        <div class="card-name">&#x1F36C; Edibles (Low AOV)</div>
+        <div class="chip-row"><span class="trigger-chip chip-aov">&#x1F4B0; Low AOV Order</span><span class="timing-chip">&#x23F1; Wait Until 8:30 AM</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-upsell">
+        <div class="card-name">&#x1F6AC; Prerolls (Low AOV)</div>
+        <div class="chip-row"><span class="trigger-chip chip-aov">&#x1F4B0; Low AOV Order</span><span class="timing-chip">&#x23F1; Wait Until 8:30 AM</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+    </div>
+    <div class="card-group" style="margin-top: 6px;">
+      <div class="card-group-title">Category Replenishment</div>
+      <div class="compact-card card-replenish">
+        <div class="card-name">&#x1F33C; Flower Replenishment</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 14 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-replenish">
+        <div class="card-name">&#x2601;&#xFE0F; Vapes Replenishment</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 14 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-replenish">
+        <div class="card-name">&#x1F36C; Edibles Replenishment</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 14 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+      <div class="compact-card card-replenish">
+        <div class="card-name">&#x1F6AC; Prerolls Replenishment</div>
+        <div class="chip-row"><span class="trigger-chip chip-order">&#x2705; Placed Order</span><span class="timing-chip">&#x23F1; 10 Days</span><span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post: Winback -->
+  <div class="cell">
+    <div class="flow-card card-winback">
+      <div class="card-name">Customer Winback: 30 Days</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-list has-tooltip">&#x2795; Added to Segment
+        <span class="chip-tooltip">
+          <span class="tooltip-title">30 Day Winback Segment</span>
+          <span class="tooltip-rule">Completed Order <strong>1×+</strong> over <strong>all time</strong></span>
+          <span class="tooltip-and">AND</span>
+          <span class="tooltip-rule">Completed Order <strong>0×</strong> in last <strong>30 days</strong></span>
+          <span class="tooltip-and">AND</span>
+          <span class="tooltip-rule">Can receive <strong>email marketing</strong></span>
+        </span>
+      </span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; Immediate</span>
+      <span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span>
+    </div>
+    <div class="flow-card card-winback">
+      <div class="card-name">Customer Winback: 60 Days</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-list has-tooltip">&#x2795; Added to Segment
+        <span class="chip-tooltip">
+          <span class="tooltip-title">60 Day Winback Segment</span>
+          <span class="tooltip-rule">Completed Order <strong>1×+</strong> over <strong>all time</strong></span>
+          <span class="tooltip-and">AND</span>
+          <span class="tooltip-rule">Completed Order <strong>0×</strong> in last <strong>60 days</strong></span>
+          <span class="tooltip-and">AND</span>
+          <span class="tooltip-rule">Can receive <strong>email marketing</strong></span>
+        </span>
+      </span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; Immediate</span>
+      <span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span>
+    </div>
+    <div class="flow-card card-winback">
+      <div class="card-name">Customer Winback: 90 Days</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-list has-tooltip">&#x2795; Added to Segment
+        <span class="chip-tooltip">
+          <span class="tooltip-title">90 Day Winback Segment</span>
+          <span class="tooltip-rule">Completed Order <strong>1×+</strong> over <strong>all time</strong></span>
+          <span class="tooltip-and">AND</span>
+          <span class="tooltip-rule">Completed Order <strong>0×</strong> in last <strong>90 days</strong></span>
+          <span class="tooltip-and">AND</span>
+          <span class="tooltip-rule">Can receive <strong>email marketing</strong></span>
+        </span>
+      </span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; Immediate</span>
+      <span class="freq-chip">&#x2709;&#xFE0F; Sends Once</span>
+    </div>
+    <div class="flow-card card-winback" style="margin-top: 4px;">
+      <div class="card-name">Won Back Customers</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-list has-tooltip">&#x2795; Won Back 2 Weeks Ago
+        <span class="chip-tooltip">
+          <span class="tooltip-title">Won Back 2 Weeks Ago</span>
+          <span class="tooltip-rule">Opened Email <strong>1×+</strong> between <strong>14–30 days ago</strong> in <em>Winback — 90 Days</em></span>
+          <span class="tooltip-or">OR</span>
+          <span class="tooltip-rule">Opened Email <strong>1×+</strong> between <strong>14–30 days ago</strong> in <em>Winback — 60 Days</em></span>
+          <span class="tooltip-or">OR</span>
+          <span class="tooltip-rule">Opened Email <strong>1×+</strong> between <strong>14–30 days ago</strong> in <em>Winback — 30 Days</em></span>
+          <span class="tooltip-and">AND</span>
+          <span class="tooltip-rule">Completed Order <strong>1×+</strong> between <strong>14–30 days ago</strong></span>
+        </span>
+      </span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; Wait Until 11 AM</span>
+    </div>
+    <div class="flow-card card-birthday" style="margin-top: 4px;">
+      <div class="card-name">Happy Birthday</div>
+      <span class="chip-meta">Trigger</span>
+      <span class="trigger-chip chip-date">&#x1F4C5; Date Property</span>
+      <span class="chip-meta">Timing</span>
+      <span class="timing-chip">&#x23F1; Wait Until 8:30 AM</span>
+      <div class="card-badge" style="background:#ffe4e6; color:#9f1239;">&#x1F382; Annual</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
